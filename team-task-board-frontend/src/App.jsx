@@ -11,6 +11,8 @@ import Navbar from "./components/Navbar";
 // Components
 import ProtectedRoute from "./components/ProtectedRoute";
 
+
+// team Task project added to git. I will commit here
 function App() {
   return (
     <Routes>
