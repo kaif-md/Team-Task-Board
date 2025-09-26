@@ -3,13 +3,13 @@ import { useEffect, useState } from "react";
 import { getTasks, updateTask, deleteTask } from "../services/api";
 import CreateTaskForm from "../components/CreateTaskForm";
 import KanbanBoard from "../components/KanbanBoard";
-import { Modal, Button, Form } from "react-bootstrap";
+import { Modal, Button, Form, Container, Spinner, Row, Col } from "react-bootstrap";
 
 const DashboardPage = () => {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Modal for editing
+  // Modal state
   const [showEditModal, setShowEditModal] = useState(false);
   const [currentTask, setCurrentTask] = useState(null);
 
@@ -30,7 +30,7 @@ const DashboardPage = () => {
     fetchTasks();
   }, []);
 
-  // Handle delete
+  // Delete
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this task?")) {
       try {
@@ -42,7 +42,7 @@ const DashboardPage = () => {
     }
   };
 
-  // Handle edit
+  // Edit
   const handleEditClick = (task) => {
     setCurrentTask({ ...task });
     setShowEditModal(true);
@@ -65,7 +65,7 @@ const DashboardPage = () => {
     }
   };
 
-  // Handle drag & drop
+  // Drag & Drop
   const handleDragEnd = async (result) => {
     if (!result.destination) return;
 
@@ -82,30 +82,48 @@ const DashboardPage = () => {
   };
 
   return (
-    <div className="p-4">
-      <h2 className="mb-4">📋 Dashboard (Kanban)</h2>
+    <Container className="py-4">
+      <Row className="mb-4">
+        <Col>
+          <h2 className="text-center">📋 Dashboard (Kanban)</h2>
+        </Col>
+      </Row>
 
-      <CreateTaskForm onTaskCreated={fetchTasks} />
+      {/* Create Task Form */}
+      <Row className="mb-4">
+        <Col>
+          <CreateTaskForm onTaskCreated={fetchTasks} />
+        </Col>
+      </Row>
 
-      {loading ? (
-        <p>Loading tasks...</p>
-      ) : (
-        <KanbanBoard
-          tasks={tasks}
-          onDragEnd={handleDragEnd}
-          onEdit={handleEditClick}
-          onDelete={handleDelete}
-        />
-      )}
+      {/* Tasks Board */}
+      <Row>
+        <Col>
+          {loading ? (
+            <div className="text-center my-4">
+              <Spinner animation="border" role="status" variant="primary" />
+              <p className="mt-2">Loading tasks...</p>
+            </div>
+          ) : (
+            <KanbanBoard
+              tasks={tasks}
+              onDragEnd={handleDragEnd}
+              onEdit={handleEditClick}
+              onDelete={handleDelete}
+            />
+          )}
+        </Col>
+      </Row>
 
       {/* Edit Modal */}
-      <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
+      <Modal show={showEditModal} onHide={() => setShowEditModal(false)} centered>
         <Modal.Header closeButton>
           <Modal.Title>Edit Task</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {currentTask && (
             <Form>
+              {/* Title */}
               <Form.Group className="mb-3">
                 <Form.Label>Title</Form.Label>
                 <Form.Control
@@ -117,6 +135,7 @@ const DashboardPage = () => {
                 />
               </Form.Group>
 
+              {/* Description */}
               <Form.Group className="mb-3">
                 <Form.Label>Description</Form.Label>
                 <Form.Control
@@ -132,6 +151,7 @@ const DashboardPage = () => {
                 />
               </Form.Group>
 
+              {/* Status */}
               <Form.Group className="mb-3">
                 <Form.Label>Status</Form.Label>
                 <Form.Select
@@ -140,10 +160,10 @@ const DashboardPage = () => {
                     setCurrentTask({ ...currentTask, status: e.target.value })
                   }
                 >
-                  <option value="BACKLOG">BACKLOG</option>
-                  <option value="IN_PROGRESS">IN_PROGRESS</option>
-                  <option value="REVIEW">REVIEW</option>
-                  <option value="DONE">DONE</option>
+                  <option value="BACKLOG">Backlog</option>
+                  <option value="IN_PROGRESS">In Progress</option>
+                  <option value="REVIEW">Review</option>
+                  <option value="DONE">Done</option>
                 </Form.Select>
               </Form.Group>
             </Form>
@@ -158,7 +178,7 @@ const DashboardPage = () => {
           </Button>
         </Modal.Footer>
       </Modal>
-    </div>
+    </Container>
   );
 };
 

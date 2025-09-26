@@ -1,11 +1,9 @@
 // src/pages/LoginPage.js
 import { useState } from "react";
 import { loginUser } from "../services/api";
-import { useNavigate } from "react-router-dom";
-
+import { useNavigate, Link } from "react-router-dom";
 
 export default function LoginPage() {
-  
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -26,35 +24,61 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-100">
-      <div className="bg-white p-6 rounded shadow-md w-96">
-        <h2 className="text-xl font-bold mb-4">Login</h2>
-        {error && <p className="text-red-500 mb-2">{error}</p>}
+    <div className="d-flex align-items-center justify-content-center vh-100 bg-light">
+      <div className="card shadow p-4" style={{ width: "24rem" }}>
+        <h2 className="text-center mb-4">Login</h2>
+
+        {error && (
+          <div className="alert alert-danger text-center" role="alert">
+            {error}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit}>
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={form.email}
-            onChange={handleChange}
-            className="w-full border p-2 mb-2 rounded"
-            required
-          />
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={form.password}
-            onChange={handleChange}
-            className="w-full border p-2 mb-2 rounded"
-            required
-          />
-          <button
-            type="submit"
-            className="w-full bg-blue-500 text-white p-2 rounded"
-          >
+          <div className="mb-3">
+            <label htmlFor="email" className="form-label">
+              Email address
+            </label>
+            <input
+              type="email"
+              name="email"
+              id="email"
+              value={form.email}
+              onChange={handleChange}
+              className="form-control"
+              placeholder="Enter your email"
+              required
+            />
+          </div>
+
+          <div className="mb-3">
+            <label htmlFor="password" className="form-label">
+              Password
+            </label>
+            <input
+              type="password"
+              name="password"
+              id="password"
+              value={form.password}
+              onChange={handleChange}
+              className="form-control"
+              placeholder="Enter your password"
+              required
+            />
+          </div>
+
+          <button type="submit" className="btn btn-primary w-100 mb-3">
             Login
           </button>
+
+          <div className="text-center">
+            <small>
+              Don’t have an account?{" "}
+              <Link to="/register" className="text-decoration-none">
+                Register
+              </Link>
+            </small>
+          </div>
         </form>
       </div>
     </div>

@@ -1,6 +1,7 @@
 // src/components/CreateTaskForm.jsx
 import { useState } from "react";
 import { createTask } from "../services/api";
+import { Form, Button, Card, Row, Col } from "react-bootstrap";
 
 const CreateTaskForm = ({ onTaskCreated }) => {
   const [formData, setFormData] = useState({
@@ -22,7 +23,7 @@ const CreateTaskForm = ({ onTaskCreated }) => {
     try {
       const payload = {
         ...formData,
-        assigneeId: Number(formData.assigneeId), // ensure number
+        assigneeId: Number(formData.assigneeId),
       };
       await createTask(payload);
       alert("✅ Task created successfully!");
@@ -34,7 +35,7 @@ const CreateTaskForm = ({ onTaskCreated }) => {
         status: "BACKLOG",
         dueDate: "",
       });
-      if (onTaskCreated) onTaskCreated(); // refresh tasks in parent
+      if (onTaskCreated) onTaskCreated();
     } catch (err) {
       console.error("❌ Error creating task:", err);
       alert("Failed to create task");
@@ -42,91 +43,106 @@ const CreateTaskForm = ({ onTaskCreated }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-4 border rounded bg-white shadow">
-      <h3 className="text-lg font-bold mb-2">Create New Task</h3>
+    <Card className="mb-4 shadow-lg border-0">
+      <Card.Header className="bg-primary text-white">
+        <h5 className="mb-0">➕ Create New Task</h5>
+      </Card.Header>
+      <Card.Body>
+        <Form onSubmit={handleSubmit}>
+          {/* Title & Assignee in same row */}
+          <Row>
+            <Col md={8}>
+              <Form.Group className="mb-3" controlId="formTitle">
+                <Form.Label>Task Title</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Enter task title"
+                  name="title"
+                  value={formData.title}
+                  onChange={handleChange}
+                  required
+                />
+              </Form.Group>
+            </Col>
+            <Col md={4}>
+              <Form.Group className="mb-3" controlId="formAssignee">
+                <Form.Label>Assignee ID</Form.Label>
+                <Form.Control
+                  type="number"
+                  placeholder="User ID"
+                  name="assigneeId"
+                  value={formData.assigneeId}
+                  onChange={handleChange}
+                  required
+                />
+              </Form.Group>
+            </Col>
+          </Row>
 
-      <div className="mb-2">
-        <label className="block">Title</label>
-        <input
-          type="text"
-          name="title"
-          value={formData.title}
-          onChange={handleChange}
-          className="border p-2 w-full"
-          required
-        />
-      </div>
+          <Form.Group className="mb-3" controlId="formDescription">
+            <Form.Label>Description</Form.Label>
+            <Form.Control
+              as="textarea"
+              rows={3}
+              placeholder="Enter task details..."
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+            />
+          </Form.Group>
 
-      <div className="mb-2">
-        <label className="block">Description</label>
-        <textarea
-          name="description"
-          value={formData.description}
-          onChange={handleChange}
-          className="border p-2 w-full"
-          rows="3"
-        />
-      </div>
+          {/* Priority, Status, Due Date in one row */}
+          <Row>
+            <Col md={4}>
+              <Form.Group className="mb-3" controlId="formPriority">
+                <Form.Label>Priority</Form.Label>
+                <Form.Select
+                  name="priority"
+                  value={formData.priority}
+                  onChange={handleChange}
+                >
+                  <option value="LOW">Low</option>
+                  <option value="MEDIUM">Medium</option>
+                  <option value="HIGH">High</option>
+                </Form.Select>
+              </Form.Group>
+            </Col>
+            <Col md={4}>
+              <Form.Group className="mb-3" controlId="formStatus">
+                <Form.Label>Status</Form.Label>
+                <Form.Select
+                  name="status"
+                  value={formData.status}
+                  onChange={handleChange}
+                >
+                  <option value="BACKLOG">Backlog</option>
+                  <option value="IN_PROGRESS">In Progress</option>
+                  <option value="REVIEW">Review</option>
+                  <option value="DONE">Done</option>
+                </Form.Select>
+              </Form.Group>
+            </Col>
+            <Col md={4}>
+              <Form.Group className="mb-3" controlId="formDueDate">
+                <Form.Label>Due Date</Form.Label>
+                <Form.Control
+                  type="datetime-local"
+                  name="dueDate"
+                  value={formData.dueDate}
+                  onChange={handleChange}
+                />
+              </Form.Group>
+            </Col>
+          </Row>
 
-      <div className="mb-2">
-        <label className="block">Priority</label>
-        <select
-          name="priority"
-          value={formData.priority}
-          onChange={handleChange}
-          className="border p-2 w-full"
-        >
-          <option value="LOW">LOW</option>
-          <option value="MEDIUM">MEDIUM</option>
-          <option value="HIGH">HIGH</option>
-        </select>
-      </div>
-
-      <div className="mb-2">
-        <label className="block">Status</label>
-        <select
-          name="status"
-          value={formData.status}
-          onChange={handleChange}
-          className="border p-2 w-full"
-        >
-          <option value="BACKLOG">BACKLOG</option>
-          <option value="IN_PROGRESS">IN_PROGRESS</option>
-          <option value="REVIEW">REVIEW</option>
-          <option value="DONE">DONE</option>
-        </select>
-      </div>
-
-      <div className="mb-2">
-        <label className="block">Assignee ID</label>
-        <input
-          type="number"
-          name="assigneeId"
-          value={formData.assigneeId}
-          onChange={handleChange}
-          className="border p-2 w-full"
-          required
-        />
-      </div>
-
-      <div className="mb-2">
-        <label className="block">Due Date</label>
-        <input
-          type="datetime-local"
-          name="dueDate"
-          value={formData.dueDate}
-          onChange={handleChange}
-          className="border p-2 w-full"
-        />
-      </div>
-
-      <button
-        type="submit"
-        className="bg-red text-black px-4 py-2 rounded"
-      >
-        Create Task
-      </button>
-    </form>
+          <div className="d-flex justify-content-end">
+            <Button type="submit" variant="success" size="lg">
+              ✅ Create Task
+            </Button>
+          </div>
+        </Form>
+      </Card.Body>
+    </Card>
   );
 };
 

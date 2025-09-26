@@ -1,20 +1,20 @@
-// src/components/ProtectedRoute.js
+// src/components/PublicRoute.js
 import React, { useContext } from "react";
 import { Navigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 
-function ProtectedRoute({ children }) {
+function PublicRoute({ children }) {
   const { token, loading } = useContext(AuthContext);
 
   if (loading) {
-    return <div>Loading...</div>; // could use spinner
+    return <div>Loading...</div>; // optional spinner
   }
 
-  if (!token) {
-    return <Navigate to="/login" replace />;
+  if (token) {
+    return <Navigate to="/dashboard" />; // already logged in → redirect
   }
 
   return children;
 }
 
-export default ProtectedRoute;
+export default PublicRoute;
