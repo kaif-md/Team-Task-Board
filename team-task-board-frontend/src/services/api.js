@@ -2,7 +2,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "https://team-task-board-backend-yilz.onrender.com"
+  baseURL: "http://localhost:8080", // backend URL (adjust if needed)
 });
 
 // Attach token automatically if available
