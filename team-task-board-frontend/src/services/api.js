@@ -8,7 +8,8 @@ const API = axios.create({
 // Attach token automatically if available
 API.interceptors.request.use((req) => {
   const token = localStorage.getItem("token");
-  if (token) {
+   // Skip attaching token for login/signup
+  if (token && !req.url.startsWith("/auth")) {
     req.headers.Authorization = `Bearer ${token}`;
   }
   return req;
